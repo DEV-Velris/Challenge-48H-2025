@@ -1,8 +1,177 @@
+import { MapLyon } from "@/ressources/assets";
+import { TeamMember } from "@/types";
+import Image from "next/image";
+
+const devTeamMembers: TeamMember[] = [
+  {
+    first_name: "Thomas",
+    last_name: "Foltzer",
+    class: "B3",
+  },
+  {
+    first_name: "Alexis",
+    last_name: "Soubieux",
+    class: "B3",
+    profile_picture_url: "/membersPicture/SoubieuxAlexis.jpg" 
+  },
+  {
+    first_name: "Envel",
+    last_name: "Righini",
+    class: "B3",
+  },
+  {
+    first_name: "Anthony",
+    last_name: "Pereira",
+    class: "B2",
+    profile_picture_url: "/membersPicture/PereiraAnthony.jpg" 
+  }
+]
+
+const infraCyberTeamMember: TeamMember[] = [
+  {
+    first_name: "Mayeul",
+    last_name: "Boeri",
+    class: "B3",
+  },
+  {
+    first_name: "Dorian",
+    last_name: "Tatoulian",
+    class: "B3",
+  },
+  {
+    first_name: "Corentin",
+    last_name: "Delpree",
+    class: "B2",
+  },
+  {
+    first_name: "Mathieu",
+    last_name: "Marchand",
+    class: "B1",
+  }
+]
+
+const dataTeamMember: TeamMember[] = [
+  {
+    first_name: "Corentin",
+    last_name: "Sanjuan",
+    class: "B3",
+  },
+  {
+    first_name: "Berriche",
+    last_name: "Yousri",
+    class: "B1",
+  }
+]
+
+
+
 export default function Page() {
+  const noIcon = "/membersPicture/noProfilePicture.png";
   return (
-    <div>
-      <h1 class="flex justify-center items-center font-bold text-4xl mt-15" >Presentation Du Projet</h1>
-       
+    <div className="flex flex-col justify-center items-center">
+      <h1 className="font-bold text-4xl mt-15" >Presentation Du Projet</h1>
+      <h2 className="mt-10 text-2xl mb-20" > Notre sujet</h2> 
+      <div className="flex flex-row items-center gap-8 ml-[15%] mr-[15%]">
+        <div>
+          <MapLyon/>
+        </div>
+        <div>
+        <p className="mt-10 text-xl">En 2180, la mégapole qu'est devenue Lyon est sujette à de violentes catastrophe naturelles qui détruisent la ville. <br/>
+        Heureusement un groupe de jeunes experts se sont ligués pour protégé la ville des inondations, tremblements de terre, hackers et autres cataclysmes. <br/>
+        Chaque unité à sa manière a pu mettre en place une solution IT pour couvrir l'ensemble des menaces possibles.</p> 
+        </div>
+      </div>
+      <h2 className="mt-20 text-2xl mb-20">Notre équipe</h2>
+      
+      <h3 className="text-2xl mb-10">Dev</h3>
+      <div>
+        {devTeamMembers.map((member, index) => (
+          <div key={`dev-${index}`} className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
+              <p className="text-xl">{member.first_name}</p>
+              <p className="text-xl">{member.last_name}</p>
+              <p className="text-xl  ml-20">{member.class}</p>
+            <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
+            <Image src={member.profile_picture_url ?? noIcon} alt={`${member.first_name} ${member.last_name} picture`} width={200} height={200} />
+            </div>
+          </div>
+        ))}
+        {/* <div className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
+          <p className="text-xl">Foltzer</p>
+          <p className="text-xl">Thomas</p>
+          <p className="text-xl  ml-20">b3 Dev</p>
+          <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
+            <SoubieuxAlexis/>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
+          <p className="text-xl">Soubieux</p>
+          <p className="text-xl">Alexis</p>
+          <p className="text-xl  ml-20">b3 Dev</p>
+          <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
+            <SoubieuxAlexis/>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
+          <p className="text-xl">Righini</p>
+          <p className="text-xl">Envel</p>
+          <p className="text-xl  ml-20">test</p>
+          <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
+            <SoubieuxAlexis/>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
+          <p className="text-xl">test</p>
+          <p className="text-xl">test</p>
+          <p className="text-xl  ml-20">test</p>
+          <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
+            <SoubieuxAlexis/>
+          </div>
+        </div> */}
+      </div>
+
+      <h3 className="text-2xl mt-30 mb-10">Infra/Cyber</h3>
+      <div>
+      {infraCyberTeamMember.map((member, index) => (
+          <div key={`infra-cyber-${index}`} className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
+              <p className="text-xl">{member.first_name}</p>
+              <p className="text-xl">{member.last_name}</p>
+              <p className="text-xl  ml-20">{member.class}</p>
+            <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
+              <Image src={member.profile_picture_url ?? noIcon} alt={`${member.first_name} ${member.last_name} picture`} width={200} height={200} />
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* <div>
+        <div className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
+          <p className="text-xl">test</p>
+          <p className="text-xl">test</p>
+          <p className="text-xl  ml-20">test</p>
+          <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
+            <SoubieuxAlexis/>
+          </div>
+        </div>
+      </div> */}
+      <h3 className="text-2xl mt-30 mb-10">Data</h3>
+      <div>
+      {dataTeamMember.map((member, index) => (
+          <div key={`data-${index}`} className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
+              <p className="text-xl">{member.first_name}</p>
+              <p className="text-xl">{member.last_name}</p>
+              <p className="text-xl  ml-20">{member.class}</p>
+            <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
+            <Image src={member.profile_picture_url ?? noIcon} alt={`${member.first_name} ${member.last_name} picture`} width={200} height={200} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <h2 className="text-2xl mb-20 mt-30">tecnologie utilisée</h2>
+        <div className="grid grid-cols-2">
+          
+        </div>
     </div> 
   );
 }
