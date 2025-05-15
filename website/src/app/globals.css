@@ -1,11 +1,26 @@
 @import "tailwindcss";
 
+@theme {
+    --color-gray-1: oklch(0.32 0 0);
+    --color-gray-2: oklch(0.71 0.0142 41.16);
+    --color-red: oklch(0.57 0.2222 28.98);
+    --color-white: oklch(0.99 0 0);
+    --color-blue: oklch(0.47 0.191 264.11);
 
-
-body {
-    background-color: #EAF1FF;
+    --font-title: 700 1.25rem/1.4 Roboto, sans-serif;
+    --font-body: 400 1rem/1.5 Roboto, sans-serif;
+    --font-special: 300 1rem/1.5 Roboto, sans-serif;
 }
 
-h1 {
-    color: #2B3FCC;
+body {
+    background-color: var(--color-white);
+    font: var(--font-body);
+}
+
+h1, h2, h3, .font-title {
+    font: var(--font-title);
+}
+
+.font-special {
+    font: var(--font-special);
 }
