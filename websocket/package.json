@@ -2,7 +2,7 @@
   "name": "websocket",
   "version": "1.0.0",
   "description": "Serveur WebSocket pour le projet 48H",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
