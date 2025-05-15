@@ -9,13 +9,7 @@ import {
     FaSolarPanel,
     FaHandHoldingHeart,
 } from 'react-icons/fa';
-
-type Activity = {
-    icon: React.JSX.Element;
-    title: string;
-    description: string;
-    badge: string;
-};
+import {Activity} from "@/types";
 
 const activities: Activity[] = [
     {
