@@ -1,0 +1,33 @@
+{
+  "name": "websocket",
+  "version": "1.0.0",
+  "description": "Serveur WebSocket pour le projet 48H",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DEV-Velris/Challenge-48H-2025.git"
+  },
+  "author": "Velris",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DEV-Velris/Challenge-48H-2025/issues"
+  },
+  "homepage": "https://github.com/DEV-Velris/Challenge-48H-2025#readme",
+  "devDependencies": {
+    "@types/node": "^22.15.18",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "socket.io": "^4.8.1"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.9",
+    "utf-8-validate": "^6.0.5"
+  }
+}
