@@ -1,28 +1,43 @@
-// src/components/MapComponent.tsx
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import L from 'leaflet';
 import mqtt from 'mqtt';
-import lyonGeoJson from '../../app/map/lyon.geo.json'; // adjust path
+import lyonGeoJson from './lyon.geo.json';
 import 'leaflet/dist/leaflet.css';
 
 type DisasterType = 'none' | 'flood' | 'earthquake';
 
 type StatusMap = {
-  [arrondissement: string]: DisasterType;
+  [arr: string]: DisasterType;
 };
 
+// 🔧 Normalize text
+const normalize = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/ème/g, 'e')
+    .replace(/[^\w]/g, '')
+    .trim();
+
+// 📡 Extract 'lyon/3e/flood' → '3e'
 const extractArrondissement = (topic: string) => {
   const match = topic.match(/^lyon\/([^/]+)/);
-  return match ? match[1] : 'Inconnu';
+  return match ? normalize(match[1]) : 'inconnu';
 };
 
-export default function MapComponent() {
+// 🗺️ Extract '3e', '1er' from full GeoJSON label
+const extractArrFromFeatureName = (name: string): string => {
+  const match = name.match(/(\d{1,2}(?:er|e))/i);
+  return match ? normalize(match[1]) : normalize(name);
+};
+
+export default function MapPage() {
   const [statusMap, setStatusMap] = useState<StatusMap>({});
   const geoJsonLayerRef = useRef<L.GeoJSON>(null);
 
+  // ✅ MQTT setup
   useEffect(() => {
     const client = mqtt.connect('ws://localhost:9001');
 
@@ -32,32 +47,35 @@ export default function MapComponent() {
     });
 
     client.on('message', (topic, message) => {
-  const arr = extractArrondissement(topic);
-  console.log('📩 MQTT Message:', topic, arr, message.toString()); // 👈 ADD THIS
+      const rawArr = extractArrondissement(topic);
+      const arr = normalize(rawArr);
+      console.log('📩 MQTT Message:', topic, rawArr, '→', arr, message.toString());
 
-  if (!arr) return;
+      if (!arr) return;
 
-  let disaster: DisasterType = 'none';
-  if (topic.includes('flood')) disaster = 'flood';
-  else if (topic.includes('earthquake')) disaster = 'earthquake';
+      let disaster: DisasterType = 'none';
+      if (topic.includes('flood')) disaster = 'flood';
+      else if (topic.includes('earthquake')) disaster = 'earthquake';
 
-  setStatusMap((prev) => ({
-    ...prev,
-    [arr]: disaster,
-  }));
-});
+      setStatusMap((prev) => ({
+        ...prev,
+        [arr]: disaster,
+      }));
+    });
 
     return () => {
       client.end();
     };
   }, []);
 
+  // 🖌️ Update colors on statusMap change
   useEffect(() => {
     if (!geoJsonLayerRef.current) return;
 
     geoJsonLayerRef.current.eachLayer((layer: any) => {
       const feature = layer.feature;
-      const arr = feature.properties.nom;
+      const rawArr = feature.properties?.nom;
+      const arr = extractArrFromFeatureName(rawArr);
       const color = getColor(arr);
 
       layer.setStyle({
@@ -67,12 +85,13 @@ export default function MapComponent() {
         weight: 1,
       });
 
-      layer.bindPopup(`<b>${arr}</b><br>Status: ${statusMap[arr] || 'none'}`);
+      layer.bindPopup(`<b>${rawArr}</b><br>Status: ${statusMap[arr] || 'none'}`);
     });
   }, [statusMap]);
 
   const getColor = (arr: string): string => {
     const status = statusMap[arr];
+    console.log(`🎨 Status for ${arr}: ${status}`);
     switch (status) {
       case 'flood':
         return '#60A5FA';
@@ -93,12 +112,16 @@ export default function MapComponent() {
         <GeoJSON
           data={lyonGeoJson as any}
           ref={geoJsonLayerRef}
-          style={(feature) => ({
-            fillColor: getColor(feature?.properties?.nom),
-            color: '#555',
-            weight: 1,
-            fillOpacity: 0.6,
-          })}
+          style={(feature) => {
+            const rawArr = feature?.properties?.nom;
+            const arr = extractArrFromFeatureName(rawArr);
+            return {
+              fillColor: getColor(arr),
+              color: '#555',
+              weight: 1,
+              fillOpacity: 0.6,
+            };
+          }}
         />
       </MapContainer>
     </div>
