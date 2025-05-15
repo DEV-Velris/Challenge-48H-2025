@@ -5,10 +5,9 @@ import React, { useState, useEffect } from 'react';
 
 const navItems = [
     { label: 'Accueil', href: '/' },
-    { label: 'Notre Mission', href: '#mission' },
-    { label: "L'équipe", href: '#team' },
-    { label: 'Technologies', href: '#tech' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'En Direct', href: '/event' },
+    { label: "Chat en direct", href: '/chat' },
+    { label: 'Activités', href: '/activity' },
 ];
 
 export const Navbar: React.FC = () => {
