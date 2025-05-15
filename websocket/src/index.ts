@@ -17,11 +17,6 @@ websocket.on("connection", (socket) => {
         }
     });
 
-    interface MessagePayload {
-        districtId: string;
-        message: string;
-    }
-
     socket.on("message", (payload: MessagePayload) => {
         const { districtId, message } = payload;
         if (rooms.includes(districtId)) {
