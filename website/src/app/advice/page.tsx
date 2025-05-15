@@ -1,0 +1,64 @@
+'use client';
+
+import { FaWifi, FaMapMarkedAlt, FaTools, FaBrain, FaHiking } from 'react-icons/fa';
+
+const conseils = [
+  {
+    icon: <FaTools className="text-blue-500" size={20} />,
+    title: "Kit de Survie Numérique",
+    description: "Préparez un kit avec power bank solaire, carte satellite, app d'urgence, documents scannés et tuto de chiffrement.",
+    badge: "Essentiel"
+  },
+  {
+    icon: <FaMapMarkedAlt className="text-red-500" size={20} />,
+    title: "Réagir par type de catastrophe",
+    description: "Inondation : fuyez les zones basses. Séisme : coupez gaz/élec. Cyberattaque : déconnectez vos appareils.",
+    badge: "Urgence"
+  },
+  {
+    icon: <FaHiking className="text-orange-500" size={20} />,
+    title: "Check-list d'évacuation rapide",
+    description: "Appli hors-ligne, filtre à eau, gants, casque, liste de contacts, QR codes de secours.",
+    badge: "Prêt à partir"
+  },
+  {
+    icon: <FaBrain className="text-purple-500" size={20} />,
+    title: "Gérer son stress",
+    description: "Respiration, podcast de crise, activités détente comme le surf urbain ou karaoké post-sismique.",
+    badge: "Bien-être"
+  },
+  {
+    icon: <FaWifi className="text-green-500" size={20} />,
+    title: "Tech & réseaux d'urgence",
+    description: "Générateur manuel, réseau Mesh local, relais Wi-Fi avec drone, données en mode économie.",
+    badge: "Innovant"
+  },
+];
+
+export default function ConseilsPage() {
+  return (
+    <main className="min-h-screen py-10 px-4 md:px-10">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-800 mb-8">Conseils de survie</h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {conseils.map((conseil, index) => (
+            <div
+              key={index}
+              className="bg-white shadow-md rounded-xl p-6 border border-gray-200"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-gray-100 rounded-full">{conseil.icon}</div>
+                <h2 className="text-xl font-semibold text-gray-800">{conseil.title}</h2>
+              </div>
+              <p className="text-gray-600">{conseil.description}</p>
+              <span className="inline-block mt-4 text-sm font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-600">
+                {conseil.badge}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
+  );
+}
