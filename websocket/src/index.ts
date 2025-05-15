@@ -1,5 +1,8 @@
 import {Server} from "socket.io";
 import {MessagePayload} from "@/_types/MessagePayload";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const websocket = new Server({
     cors: {
@@ -41,4 +44,6 @@ websocket.on("connection", (socket) => {
     });
 });
 
-websocket.listen(3000);
+websocket.listen(process.env.PORT !== undefined ? parseInt(process.env.PORT) : 3001);
+
+console.log(`WebSocket server is running on port ${process.env.PORT !== undefined ? process.env.PORT : 3001}`);
