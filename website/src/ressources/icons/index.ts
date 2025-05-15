@@ -1,0 +1,1 @@
+// Içi seront les .tsx utilisant les <Image> Optimisé de Next
