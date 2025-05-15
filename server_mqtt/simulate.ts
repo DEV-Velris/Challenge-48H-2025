@@ -2,7 +2,7 @@ import mqtt from 'mqtt'
 
 const client = mqtt.connect('mqtt://localhost:1883')
 
-const arrondissements = ['1er', '2e', '3e', '4e', '5e', '6e', '7e', '8e', '9e']
+const districts = ['1er', '2e', '3e', '4e', '5e', '6e', '7e', '8e', '9e']
 const events = ['earthquake', 'flood']
 
 function getRandomElement<T>(arr: T[]): T {
@@ -28,7 +28,7 @@ function generateEventPayload(eventType: string) {
 }
 
 function publishRandomEvent() {
-  const arrondissement = getRandomElement(arrondissements)
+  const arrondissement = getRandomElement(districts)
   const event = getRandomElement(events)
   const topic = `lyon/${arrondissement}/${event}`
   const payload = generateEventPayload(event)
