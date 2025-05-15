@@ -9,6 +9,11 @@ type MessageType = {
   payload: any;
 };
 
+const extractArrondissement = (topic: string) => {
+  const match = topic.match(/^lyon\/([^/]+)/);
+  return match ? match[1] : 'Inconnu';
+};
+
 export default function InfoPage() {
   const [messages, setMessages] = useState<MessageType[]>([]);
 
@@ -71,8 +76,8 @@ export default function InfoPage() {
               type === 'Inondation'
                 ? 'bg-blue-100 text-blue-600'
                 : type === 'Séisme'
-                ? 'bg-red-100 text-red-600'
-                : 'bg-gray-200 text-gray-600';
+                  ? 'bg-red-100 text-red-600'
+                  : 'bg-gray-200 text-gray-600';
 
             return (
               <li
@@ -86,7 +91,7 @@ export default function InfoPage() {
                     <span
                       className={`text-xs px-2 py-0.5 rounded-full ${badgeColor}`}
                     >
-                      {msg.topic}
+                      {extractArrondissement(msg.topic)}
                     </span>
                   </div>
                   <ul className="text-sm text-gray-600 space-y-0.5">
