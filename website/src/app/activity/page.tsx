@@ -77,7 +77,7 @@ export default function ActivitiesPage() {
                     {filteredActivities.map((activity, index) => (
                         <div
                             key={index}
-                            className="bg-blue opacity-80 shadow-md rounded-xl p-6 hover:cursor-pointer hover:bg-white hover:border-4 hover:border-blue group box-border hover:p-[calc(1.5rem-4px)]"
+                            className="bg-blue opacity-80 shadow-md rounded-xl p-6 hover:cursor-pointer hover:bg-white hover:border-4 hover:border-blue group box-border hover:p-5"
                         >
                             <div className="flex items-center gap-3 mb-3">
                                 <div
