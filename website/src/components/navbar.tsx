@@ -17,15 +17,27 @@ export const Navbar: React.FC = () => {
     const [activeItem, setActiveItem] = useState('/');
 
     useEffect(() => {
+        // Empêcher le défilement du body quand le menu est ouvert
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+
         setActiveItem(window.location.pathname);
-    }, []);
+
+        // Nettoyage au démontage du composant
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [isMenuOpen]);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
     return (
-        <nav className="bg-[#2f7084] shadow-md fixed top-0 left-0 right-0 w-full z-50">
+        <nav className="bg-blue shadow-md fixed top-0 left-0 right-0 w-full z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <div className="flex-shrink-0 flex items-center">
@@ -59,7 +71,7 @@ export const Navbar: React.FC = () => {
                     <div className="md:hidden flex items-center">
                         <button
                             onClick={toggleMenu}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-none"
+                            className="inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-none z-50"
                             aria-expanded={isMenuOpen}
                         >
                             <span className="sr-only">Ouvrir le menu</span>
@@ -82,17 +94,17 @@ export const Navbar: React.FC = () => {
             </div>
 
             {isMenuOpen && (
-                <div className="md:hidden">
-                    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-blue">
+                <div className="md:hidden fixed inset-0 bg-blue z-40 flex flex-col pt-16">
+                    <div className="px-4 py-6 flex flex-col justify-center">
                         {navItems.map((item) => (
                             <Link
                                 key={item.href}
                                 href={item.href}
-                                className={`block px-3 py-2 rounded-md ${
+                                className={`block px-4 py-3 text-xl rounded-md mb-4 ${
                                     activeItem === item.href
                                         ? 'bg-red text-white'
                                         : 'text-white'
-                                } transition-colors duration-200`}
+                                }`}
                                 onClick={() => {
                                     setActiveItem(item.href);
                                     setIsMenuOpen(false);
