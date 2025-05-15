@@ -1,5 +1,11 @@
-export default function Home() {
+import React from 'react';
+import Navbar from './layout/navbar';
+
+export const Home: React.FC = () => {
   return (
-    <p>Home</p>
+    <div className="flex flex-col">
+    </div>
   );
-}
+};
+
+export default Home;
