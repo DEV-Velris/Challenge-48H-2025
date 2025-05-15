@@ -13,8 +13,8 @@ const roboto = Roboto({
 })
 
 export const metadata: Metadata = {
-    title: "Challenge 48H",
-    description: "Challenge 48H",
+    title: "SentiLyon",
+    description: "Protéger et aider les Lyonnais face aux inondations et autres catastrophes naturelles.",
 };
 
 export default function RootLayout({

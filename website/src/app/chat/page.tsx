@@ -5,6 +5,7 @@ import {io, Socket} from "socket.io-client";
 import {SocketMessagePayload, SocketRoom} from "@/types";
 import {FiSend, FiMenu} from 'react-icons/fi';
 import {useSession} from "next-auth/react";
+import {usePathname, useRouter} from 'next/navigation';
 
 const rooms: SocketRoom[] = [
     {name: "1er", id: "district1"},
@@ -20,6 +21,8 @@ const rooms: SocketRoom[] = [
 
 export default function Page() {
     const {data: session} = useSession();
+    const currentPath = usePathname();
+    const router = useRouter();
     const socketRef = useRef<Socket | null>(null);
     const [messages, setMessages] = useState<string[]>([]);
     const [selectedRoom, setSelectedRoom] = useState<SocketRoom>(rooms[0]);
@@ -78,6 +81,9 @@ export default function Page() {
     }, [messages]);
 
     const sendMessage = () => {
+        if (!session) {
+            router.push(`/login?callbackUrl=${encodeURIComponent(currentPath)}`);
+        }
         if (inputMessage.trim() === '') return;
 
         const messagePayload: SocketMessagePayload = {

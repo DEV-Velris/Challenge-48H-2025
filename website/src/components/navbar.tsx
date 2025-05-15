@@ -4,7 +4,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {NavbarItem} from "@/types";
-import {usePathname} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {signIn, signOut, useSession} from "next-auth/react";
 import {LuUser} from "react-icons/lu";
 
@@ -18,6 +18,7 @@ const navItems: NavbarItem[] = [
 export const Navbar: React.FC = () => {
     const {data: session} = useSession();
     const currentPath = usePathname();
+    const router = useRouter();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isLoggedInDropdownOpen, setIsLoggedInDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -65,7 +66,7 @@ export const Navbar: React.FC = () => {
         }
         console.log('isSessionPresent', session !== null);
         if (!session) {
-            signIn("google", {redirectTo: currentPath});
+            router.push(`/login?callbackUrl=${encodeURIComponent(currentPath)}`);
         } else {
             console.log('signOut');
             signOut({redirectTo: currentPath});
