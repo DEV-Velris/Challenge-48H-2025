@@ -1,5 +1,5 @@
 import { MapLyon } from "@/ressources/assets";
-import { TeamMember } from "@/types";
+import { TeamMember, UsedTech } from "@/types";
 import Image from "next/image";
 
 const devTeamMembers: TeamMember[] = [
@@ -63,14 +63,46 @@ const dataTeamMember: TeamMember[] = [
   }
 ]
 
+const pythonTech: UsedTech[] = [
+  {
+    name: "polars",
+    techLogo: "/technologies/python/polarsLogo.png"
+  },
+  {
+    name: "pandas",
+    techLogo: "/technologies/python/pandasLogo.png"
+  },
+  {
+    name: "scikit-learn",
+    techLogo: "/technologies/python/scikitlearnLogo.png",
+  },
+  {
+    name: "matplotlib",
+    techLogo: "/technologies/python/matplotlibLogo.png"
+  },
+  {
+    name: "seaborn",
+    techLogo: "/technologies/python/seabornLogo.png"
+  },
+  {
+    name: "jupyter",
+    techLogo: "/technologies/python/jupyterLogo.png"
+  }
+]
 
+const reactTech: UsedTech[] = [
+  {
+    name: "Next.js",
+    techLogo: "/technologies/react/nextLogo.png"
+  }
+]
 
 export default function Page() {
   const noIcon = "/membersPicture/noProfilePicture.png";
   return (
     <div className="flex flex-col justify-center items-center">
       <h1 className="font-bold text-4xl mt-15" >Presentation Du Projet</h1>
-      <h2 className="mt-10 text-2xl mb-20" > Notre sujet</h2> 
+      <h2 className="mt-10 text-3xl mb-20" > Notre sujet</h2> 
       <div className="flex flex-row items-center gap-8 ml-[15%] mr-[15%]">
         <div>
           <MapLyon/>
@@ -81,9 +113,9 @@ export default function Page() {
         Chaque unité à sa manière a pu mettre en place une solution IT pour couvrir l'ensemble des menaces possibles.</p> 
         </div>
       </div>
-      <h2 className="mt-20 text-2xl mb-20">Notre équipe</h2>
+      <h2 className="mt-20 text-3xl mb-20">Notre équipe</h2>
       
-      <h3 className="text-2xl mb-10">Dev</h3>
+      <h3 className="text-3xl mb-10">Dev</h3>
       <div>
         {devTeamMembers.map((member, index) => (
           <div key={`dev-${index}`} className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
@@ -95,44 +127,9 @@ export default function Page() {
             </div>
           </div>
         ))}
-        {/* <div className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
-          <p className="text-xl">Foltzer</p>
-          <p className="text-xl">Thomas</p>
-          <p className="text-xl  ml-20">b3 Dev</p>
-          <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
-            <SoubieuxAlexis/>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
-          <p className="text-xl">Soubieux</p>
-          <p className="text-xl">Alexis</p>
-          <p className="text-xl  ml-20">b3 Dev</p>
-          <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
-            <SoubieuxAlexis/>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
-          <p className="text-xl">Righini</p>
-          <p className="text-xl">Envel</p>
-          <p className="text-xl  ml-20">test</p>
-          <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
-            <SoubieuxAlexis/>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
-          <p className="text-xl">test</p>
-          <p className="text-xl">test</p>
-          <p className="text-xl  ml-20">test</p>
-          <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
-            <SoubieuxAlexis/>
-          </div>
-        </div> */}
       </div>
 
-      <h3 className="text-2xl mt-30 mb-10">Infra/Cyber</h3>
+      <h3 className="text-3xl mt-30 mb-10">Infra/Cyber</h3>
       <div>
       {infraCyberTeamMember.map((member, index) => (
           <div key={`infra-cyber-${index}`} className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
@@ -145,17 +142,8 @@ export default function Page() {
           </div>
         ))}
       </div>
-      {/* <div>
-        <div className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
-          <p className="text-xl">test</p>
-          <p className="text-xl">test</p>
-          <p className="text-xl  ml-20">test</p>
-          <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
-            <SoubieuxAlexis/>
-          </div>
-        </div>
-      </div> */}
-      <h3 className="text-2xl mt-30 mb-10">Data</h3>
+
+      <h3 className="text-3xl mt-30 mb-10">Data</h3>
       <div>
       {dataTeamMember.map((member, index) => (
           <div key={`data-${index}`} className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
@@ -168,10 +156,31 @@ export default function Page() {
           </div>
         ))}
       </div>
-      <h2 className="text-2xl mb-20 mt-30">tecnologie utilisée</h2>
-        <div className="grid grid-cols-2">
-          
+      <h2 className="text-3xl mb-20 mt-30">tecnologie utilisée</h2>
+        <h3 className="text-2xl mb-20">Data</h3>
+        <h4 className="text-xl mb-10">Python</h4>
+        {pythonTech.map((member, index) => (
+          <div key={`data-${index}`} className="grid grid-cols-2 items-center gap-8 ml-[5%] mr-[5%] mb-5">
+          <p className="text-xl">{member.name}</p>
+        <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
+        <Image src={member.techLogo ?? noIcon} alt={`${member.name} logo`} width={200} height={200} />
         </div>
+      </div>        
+    ))}
+      <h3 className="text-2xl mb-20 mt-30">Dev</h3>
+      <h4 className="text-xl mb-10">React</h4>
+      {reactTech.map((member, index) => (
+        <div key={`data-${index}`} className="grid grid-cols-2 items-center gap-8 ml-[5%] mr-[5%] mb-5">
+          <p className="text-xl">{member.name}</p>
+          <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
+            <Image src={member.techLogo ?? noIcon} alt={`${member.name} logo`} width={200} height={200} />
+          </div>
+        </div>        
+    ))}
+
+    <h3 className="text-2xl mb-20 mt-30"> Infra/Cyber</h3>
+    <h4 className="text-xl mb-10">Docker</h4>
+    
     </div> 
   );
 }
