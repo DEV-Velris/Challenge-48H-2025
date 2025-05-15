@@ -3,6 +3,7 @@ import {Roboto} from "next/font/google";
 import type {Metadata} from "next";
 import {Footer, Navbar} from "@/components";
 import "./globals.css";
+import {SessionProvider} from "next-auth/react";
 
 const roboto = Roboto({
     weight: ["300", "400", "700"],
@@ -24,11 +25,13 @@ export default function RootLayout({
     return (
         <html lang="fr">
         <body className={`antialiased flex flex-col min-h-screen ${roboto.className}`}>
-        <Navbar/>
-        <div className={"flex-grow pt-16"}>
-            {children}
-        </div>
-        <Footer/>
+        <SessionProvider>
+            <Navbar/>
+            <div className={"flex-grow pt-16"}>
+                {children}
+            </div>
+            <Footer/>
+        </SessionProvider>
         </body>
         </html>
     );
