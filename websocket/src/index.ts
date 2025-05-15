@@ -1,4 +1,5 @@
 import {Server} from "socket.io";
+import {MessagePayload} from "@/_types/MessagePayload";
 
 const websocket = new Server({
     cors: {
@@ -18,7 +19,7 @@ websocket.on("connection", (socket) => {
     });
 
     socket.on("message", (payload: MessagePayload) => {
-        const { districtId, message } = payload;
+        const {districtId, message} = payload;
         if (rooms.includes(districtId)) {
             websocket.to(districtId).emit("message", message);
         }
