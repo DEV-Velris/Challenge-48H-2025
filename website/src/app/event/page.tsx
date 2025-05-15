@@ -61,7 +61,7 @@ export default function InfoPage() {
   return (
     <main className="min-h-screen py-10 px-4 md:px-10 bg-gray-50">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Messages MQTT reçus</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">INFOS 🚨</h1>
 
         <ul className="space-y-2">
           {messages.map((msg, i) => {
