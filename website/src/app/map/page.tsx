@@ -40,6 +40,24 @@ const normalize = (s: string) =>
 
 const order = ['1er', '2e', '3e', '4e', '5e', '6e', '7e', '8e', '9e'].map(normalize);
 
+const formatKeyValue = (key: string, value: any): { label: string; displayValue: string } => {
+  switch (key) {
+    case 'waterLevel':
+      return { label: "Niveau de l'eau", displayValue: `${value} m` };
+    case 'duration':
+      return { label: 'Durée', displayValue: `${value} h` };
+    case 'depth':
+      return { label: 'Profondeur', displayValue: `${value} km` };
+    case 'magnitude':
+      return { label: 'Magnitude', displayValue: `${value}` };
+    case 'timestamp':
+      const hour = new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return { label: 'Heure', displayValue: hour };
+    default:
+      return { label: key, displayValue: String(value) };
+  }
+};
+
 export default function DashboardPage() {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [connectionStatus, setConnectionStatus] = useState<'connected' | 'connecting' | 'disconnected'>('connecting');
@@ -152,18 +170,11 @@ export default function DashboardPage() {
                 {status?.payload ? (
                   <ul className="text-sm text-gray-700 space-y-0.5">
                     {Object.entries(status.payload).map(([key, value]) => {
-                      if (key === 'timestamp') {
-                        const hour = new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        return (
-                          <li key={key}>
-                            <strong>Heure:</strong> <span className="font-mono">{hour}</span>
-                          </li>
-                        );
-                      }
+                      const { label, displayValue } = formatKeyValue(key, value);
                       return (
                         <li key={key}>
-                          <strong className="capitalize">{key}:</strong>{' '}
-                          <span className="font-mono">{String(value)}</span>
+                          <strong>{label}:</strong>{' '}
+                          <span className="font-mono">{displayValue}</span>
                         </li>
                       );
                     })}
@@ -205,18 +216,11 @@ export default function DashboardPage() {
                     </div>
                     <ul className="text-sm text-gray-600 space-y-0.5">
                       {Object.entries(msg.payload).map(([key, value]) => {
-                        if (key === 'timestamp') {
-                          const hour = new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                          return (
-                            <li key={key}>
-                              <strong>Heure:</strong> <span className="font-mono">{hour}</span>
-                            </li>
-                          );
-                        }
+                        const { label, displayValue } = formatKeyValue(key, value);
                         return (
                           <li key={key}>
-                            <strong className="capitalize">{key}:</strong>{' '}
-                            <span className="font-mono">{String(value)}</span>
+                            <strong>{label}:</strong>{' '}
+                            <span className="font-mono">{displayValue}</span>
                           </li>
                         );
                       })}
