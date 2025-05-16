@@ -7,7 +7,12 @@ import mqtt from 'mqtt';
 import lyonGeoJson from './lyon.geo.json';
 import 'leaflet/dist/leaflet.css';
 
-type DisasterType = 'none' | 'flood' | 'earthquake';
+const DisasterEnum: Record<'flood' | 'earthquake', string> = {
+  flood: 'inondation',
+  earthquake: 'tremblement de terre',
+};
+
+type DisasterType = keyof typeof DisasterEnum | 'none';
 
 type StatusMap = {
   [arr: string]: DisasterType;
@@ -77,6 +82,7 @@ export default function MapPage() {
       const rawArr = feature.properties?.nom;
       const arr = extractArrFromFeatureName(rawArr);
       const color = getColor(arr);
+      const status = statusMap[arr] || 'none';
 
       layer.setStyle({
         fillColor: color,
@@ -85,7 +91,10 @@ export default function MapPage() {
         weight: 1,
       });
 
-      layer.bindPopup(`<b>${rawArr}</b><br>Status: ${statusMap[arr] || 'none'}`);
+      const statusLabel =
+        status !== 'none' ? DisasterEnum[status as keyof typeof DisasterEnum] : 'Aucun';
+
+      layer.bindPopup(`<b>${rawArr}</b><br>Status: ${statusLabel}`);
     });
   }, [statusMap]);
 
@@ -94,17 +103,22 @@ export default function MapPage() {
     console.log(`🎨 Status for ${arr}: ${status}`);
     switch (status) {
       case 'flood':
-        return '#60A5FA';
+        return '#60A5FA'; // Blue
       case 'earthquake':
-        return '#F87171';
+        return '#F87171'; // Red
       default:
-        return '#E5E7EB';
+        return '#E5E7EB'; // Gray
     }
   };
 
   return (
     <div className="h-screen w-full">
-      <MapContainer center={[45.75, 4.85]} zoom={12} scrollWheelZoom style={{ height: '100%', width: '100%' }}>
+      <MapContainer
+        center={[45.75, 4.85]}
+        zoom={12}
+        scrollWheelZoom
+        style={{ height: '100%', width: '100%' }}
+      >
         <TileLayer
           attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
