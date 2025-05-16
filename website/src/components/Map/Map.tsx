@@ -8,8 +8,8 @@ import lyonGeoJson from './lyon.geo.json';
 import 'leaflet/dist/leaflet.css';
 
 const DisasterEnum: Record<'flood' | 'earthquake', string> = {
-  flood: 'inondation',
-  earthquake: 'tremblement de terre',
+  flood: 'Inondation',
+  earthquake: 'Tremblement de terre',
 };
 
 type DisasterType = keyof typeof DisasterEnum | 'none';
