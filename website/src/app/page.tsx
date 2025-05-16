@@ -130,16 +130,12 @@ const infraTech: UsedTechnology[] = [
         techLogo: "/technologies/infra/dockerLogo.png"
     },
     {
-        name: "Ubuntu",
-        techLogo: "/technologies/infra/ubuntuLogo.png"
+        name: "Azure",
+        techLogo: "/technologies/infra/azureLogo.png"
     },
     {
-        name: "Portainer",
-        techLogo: "/technologies/infra/portainerLogo.png"
-    },
-    {
-        name: "Traefik",
-        techLogo: "/technologies/infra/traefikLogo.png"
+        name: "Defender",
+        techLogo: "/technologies/infra/defenderLogo.png"
     }
 ]
 
