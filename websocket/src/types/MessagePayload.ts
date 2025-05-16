@@ -1,4 +1,6 @@
+import { Message } from "./Message";
+
 export type MessagePayload = {
     districtId: string;
-    message: string;
+    message: Message;
 }

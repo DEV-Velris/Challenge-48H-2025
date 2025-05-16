@@ -2,10 +2,12 @@
 
 import {useEffect, useRef, useState} from 'react';
 import {io, Socket} from "socket.io-client";
-import {SocketMessagePayload, SocketRoom} from "@/types";
+import {SocketMessage, SocketMessagePayload, SocketRoom} from "@/types";
 import {FiSend, FiMenu} from 'react-icons/fi';
 import {useSession} from "next-auth/react";
 import {usePathname, useRouter} from 'next/navigation';
+import Image from "next/image";
+import {IoPersonSharp} from "react-icons/io5";
 
 const rooms: SocketRoom[] = [
     {name: "1er", id: "district1"},
@@ -24,7 +26,7 @@ export default function Page() {
     const currentPath = usePathname();
     const router = useRouter();
     const socketRef = useRef<Socket | null>(null);
-    const [messages, setMessages] = useState<string[]>([]);
+    const [messages, setMessages] = useState<SocketMessage[]>([]);
     const [selectedRoom, setSelectedRoom] = useState<SocketRoom>(rooms[0]);
     const [inputMessage, setInputMessage] = useState<string>("");
     const [showSidebar, setShowSidebar] = useState<boolean>(false);
@@ -50,11 +52,13 @@ export default function Page() {
 
         currentSocket.emit("joinChat", selectedRoom.id);
 
-        const handleMessage = (message: string) => {
-            setMessages((prevMessages) => [...prevMessages, message]);
+        const handleMessage = (message: SocketMessage) => {
+            if (session?.user?.email !== message.authorId) {
+                setMessages((prevMessages) => [...prevMessages, message]);
+            }
         };
 
-        const handleMessageHistory = (messageHistory: string[]) => {
+        const handleMessageHistory = (messageHistory: SocketMessage[]) => {
             setMessages(messageHistory);
         };
 
@@ -67,7 +71,7 @@ export default function Page() {
             currentSocket.off("message", handleMessage);
             currentSocket.off("messageHistory", handleMessageHistory);
         };
-    }, [selectedRoom]);
+    }, [selectedRoom, session?.user?.email]);
 
     useEffect(() => {
         if (messages.length > 0) {
@@ -81,15 +85,24 @@ export default function Page() {
     }, [messages]);
 
     const sendMessage = () => {
-        if (!session) {
+        if (!session || !session.user || !session.user.name || !session.user.email) {
             router.push(`/login?callbackUrl=${encodeURIComponent(currentPath)}`);
+            return;
         }
         if (inputMessage.trim() === '') return;
 
         const messagePayload: SocketMessagePayload = {
             districtId: selectedRoom.id,
-            message: inputMessage
+            message: {
+                authorId: session.user.email,
+                author: session.user.name,
+                authorIconUrl: session.user.image || '',
+                timestamp: Date.now(),
+                content: inputMessage
+            }
         };
+
+        setMessages(prevMessages => [...prevMessages, messagePayload.message]);
 
         socketRef.current?.emit("message", messagePayload);
         setInputMessage('');
@@ -128,7 +141,8 @@ export default function Page() {
                 </div>
 
                 <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full pt-10">
-                    <div className="flex-1 overflow-y-auto p-4 bg-gray-50 max-h-[60vh] md:max-h-[65vh] messages-container">
+                    <div
+                        className="flex-1 overflow-y-auto p-4 bg-gray-50 max-h-[60vh] md:max-h-[65vh] messages-container">
                         {messages.length === 0 ? (
                             <div className="flex items-center justify-center h-full">
                                 <p className="text-gray-500 bg-white p-4 rounded-lg shadow-sm">
@@ -136,14 +150,64 @@ export default function Page() {
                                 </p>
                             </div>
                         ) : (
-                            <div className="space-y-3">
-                                {messages.map((msg, index) => (
-                                    <div key={index} className="animate-fadeIn">
-                                        <div className="bg-white p-3 rounded-lg shadow-sm max-w-[85%] inline-block">
-                                            {msg}
+                            <div className="space-y-4">
+                                {messages.map((msg, index) => {
+                                    const isCurrentUser = session?.user?.email === msg.authorId;
+
+                                    return (
+                                        <div key={index}
+                                             className={`animate-fadeIn flex items-start ${isCurrentUser ? 'justify-end' : ''}`}>
+                                            {!isCurrentUser && (
+                                                <div className="mr-3 flex-shrink-0">
+                                                    {msg.authorIconUrl.length > 0 ? (
+                                                        <Image
+                                                            src={msg.authorIconUrl}
+                                                            alt={`${msg.author} avatar`}
+                                                            width={50}
+                                                            height={50}
+                                                            className="h-10 w-10 rounded-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <IoPersonSharp className="h-10 w-10 rounded-full object-cover"/>
+                                                    )}
+                                                </div>
+                                            )}
+                                            <div>
+                                                <div
+                                                    className={`flex items-center mb-1 ${isCurrentUser ? 'justify-end' : ''}`}>
+                                                    <span
+                                                        className="font-medium mr-2">{isCurrentUser ? 'Vous' : msg.author}</span>
+                                                    <span
+                                                        className="text-xs text-gray-500">{new Date(msg.timestamp).toLocaleString('fr-FR', {
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                        day: 'numeric',
+                                                        month: 'short'
+                                                    })}</span>
+                                                </div>
+                                                <div
+                                                    className={`p-3 rounded-lg shadow-sm ${isCurrentUser ? 'bg-blue-100' : 'bg-white'}`}>
+                                                    {msg.content}
+                                                </div>
+                                            </div>
+                                            {isCurrentUser && (
+                                                <div className="ml-3 flex-shrink-0">
+                                                    {msg.authorIconUrl.length > 0 ? (
+                                                        <Image
+                                                            src={msg.authorIconUrl}
+                                                            alt={`${msg.author} avatar`}
+                                                            width={50}
+                                                            height={50}
+                                                            className="h-10 w-10 rounded-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <IoPersonSharp className="h-10 w-10 rounded-full object-cover"/>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         )}
                     </div>
@@ -172,5 +236,6 @@ export default function Page() {
                 </div>
             </div>
         </div>
-    );
+    )
+        ;
 }

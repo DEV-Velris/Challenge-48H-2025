@@ -1,6 +1,7 @@
 import {Server} from "socket.io";
 import {MessagePayload} from "@/_types/MessagePayload";
 import * as dotenv from "dotenv";
+import {Message} from "@/_types/Message";
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ const websocket = new Server({
 
 const rooms = ["district1", "district2", "district3", "district4", "district5", "district6", "district7", "district8", "district9"];
 
-const messageHistory: Record<string, string[]> = {};
+const messageHistory: Record<string, Message[]> = {};
 
 rooms.forEach(room => {
     messageHistory[room] = [];
@@ -39,7 +40,7 @@ websocket.on("connection", (socket) => {
         const {districtId, message} = payload;
         if (rooms.includes(districtId)) {
             addMessageToHistory(payload);
-            websocket.in(districtId).emit("message", message);
+            websocket.in(districtId).emit("message", {authorId: message.authorId, author: message.author, authorIconUrl: message.authorIconUrl, timestamp: message.timestamp, message: message.content});
         }
     });
 });
