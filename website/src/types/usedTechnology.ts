@@ -1,4 +1,4 @@
-export type UsedTech = {
+export type UsedTechnology = {
     name: string;
     techLogo?: string;
 }

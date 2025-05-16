@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {NavbarItem} from "@/types";
 import {usePathname, useRouter} from "next/navigation";
-import {signIn, signOut, useSession} from "next-auth/react";
+import {signOut, useSession} from "next-auth/react";
 import {LuUser} from "react-icons/lu";
 
 const navItems: NavbarItem[] = [
