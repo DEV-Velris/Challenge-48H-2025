@@ -26,11 +26,14 @@ export default function RootLayout({
         <html lang="fr">
         <body className={`antialiased flex flex-col min-h-screen ${roboto.className}`}>
         <SessionProvider>
-            <Navbar/>
-            <div className={"flex-grow pt-16 pb-16"}>
-                {children}
-            </div>
-            <Footer/>
+            <NotificationProdider>
+                <NotificationAuto message="test" />
+                <Navbar/>
+                <div className={"flex-grow pt-16 pb-16"}>
+                    {children}
+                </div>
+                <Footer/>
+            </NotificationProdider>
         </SessionProvider>
         </body>
         </html>
