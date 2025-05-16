@@ -78,5 +78,5 @@ function publishRandomEvent() {
 client.on('connect', () => {
   console.log('✅ Connected to MQTT broker');
   publishRandomEvent();
-  setInterval(publishRandomEvent, 1000 * 30); // every 30 seconds
+  setInterval(publishRandomEvent, 1000 * 1); // every 30 seconds
 });

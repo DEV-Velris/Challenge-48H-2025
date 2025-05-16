@@ -132,7 +132,7 @@ export default function MapPage() {
   };
 
   return (
-    <div className="h-screen w-full">
+    <div className="h-screen w-full p-4 sm:mb-124">
       <MapContainer
         center={[45.75, 4.85]}
         zoom={12}
