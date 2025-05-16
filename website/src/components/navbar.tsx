@@ -64,11 +64,9 @@ export const Navbar: React.FC = () => {
             event.preventDefault();
             event.stopPropagation();
         }
-        console.log('isSessionPresent', session !== null);
         if (!session) {
             router.push(`/login?callbackUrl=${encodeURIComponent(currentPath)}`);
         } else {
-            console.log('signOut');
             signOut({redirectTo: currentPath});
         }
     };
@@ -108,6 +106,7 @@ export const Navbar: React.FC = () => {
                     <div className="hidden md:flex items-center" ref={dropdownRef}>
                         <div className="relative">
                             <button
+                                aria-label="User menu"
                                 onClick={toggleDropdown}
                                 className="flex items-center justify-center ml-4 rounded-full bg-blue text-white w-10 h-10 hover:bg-blue-600 transition-colors duration-200"
                             >
@@ -140,6 +139,7 @@ export const Navbar: React.FC = () => {
                     <div className="md:hidden flex items-center">
                         <div className="relative" ref={dropdownRef}>
                             <button
+                                aria-label="User menu"
                                 onClick={toggleDropdown}
                                 className="flex items-center justify-center rounded-full bg-blue text-white w-10 h-10 mr-2"
                             >
