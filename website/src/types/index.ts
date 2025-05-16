@@ -4,3 +4,5 @@ export type {SocketMessage} from "./SocketMessage";
 export type {FooterLink} from "./FooterLink";
 export type {NavbarItem} from "./NavbarItem";
 export type {Activity} from "./Activity";
+export type {TeamMember} from "./teamMember";
+export type {UsedTechnology} from "./usedTechnology";
