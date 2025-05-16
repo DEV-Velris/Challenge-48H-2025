@@ -209,44 +209,46 @@ export default function DashboardPage() {
         <h2 className="text-2xl font-semibold mb-4">Derniers événements</h2>
         <div className="overflow-y-auto max-h-64 pr-1">
           <ul className="space-y-3">
-            {messages.map((msg, i) => {
-              const type = getType(msg.topic);
-              const icon = getIcon(msg.topic);
-              const badgeColor =
-                type === 'Inondation'
-                  ? 'bg-blue-100 text-blue-600'
-                  : type === 'Séisme'
-                    ? 'bg-red-100 text-red-600'
-                    : 'bg-gray-200 text-gray-600';
+            {messages
+              .filter((msg) => msg.payload && Object.keys(msg.payload).length > 0)
+              .map((msg, i) => {
+                const type = getType(msg.topic);
+                const icon = getIcon(msg.topic);
+                const badgeColor =
+                  type === 'Inondation'
+                    ? 'bg-blue-100 text-blue-600'
+                    : type === 'Séisme'
+                      ? 'bg-red-100 text-red-600'
+                      : 'bg-gray-200 text-gray-600';
 
-              return (
-                <li
-                  key={i}
-                  className="bg-white shadow-sm rounded-lg p-4 border border-gray-200 flex items-start justify-between"
-                >
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      {icon}
-                      <span className="font-semibold text-gray-800">{type}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${badgeColor}`}>
-                        {extractArrondissement(msg.topic)}
-                      </span>
+                return (
+                  <li
+                    key={i}
+                    className="bg-white shadow-sm rounded-lg p-4 border border-gray-200 flex items-start justify-between"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        {icon}
+                        <span className="font-semibold text-gray-800">{type}</span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${badgeColor}`}>
+                          {extractArrondissement(msg.topic)}
+                        </span>
+                      </div>
+                      <ul className="text-sm text-gray-600 space-y-0.5">
+                        {Object.entries(msg.payload).map(([key, value]) => {
+                          const { label, displayValue } = formatKeyValue(key, value);
+                          return (
+                            <li key={key}>
+                              <strong>{label}:</strong>{' '}
+                              <span className="font-mono">{displayValue}</span>
+                            </li>
+                          );
+                        })}
+                      </ul>
                     </div>
-                    <ul className="text-sm text-gray-600 space-y-0.5">
-                      {Object.entries(msg.payload).map(([key, value]) => {
-                        const { label, displayValue } = formatKeyValue(key, value);
-                        return (
-                          <li key={key}>
-                            <strong>{label}:</strong>{' '}
-                            <span className="font-mono">{displayValue}</span>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                </li>
-              );
-            })}
+                  </li>
+                );
+              })}
           </ul>
         </div>
       </div>
