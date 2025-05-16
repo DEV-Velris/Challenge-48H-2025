@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import mqtt from 'mqtt';
 import { FaWater, FaMountain } from 'react-icons/fa';
-import lyonGeoJson from '../../components/Map/lyon.geo.json';
 
 const MapComponent = dynamic(() => import('../../components/Map/Map'), { ssr: false });
 
@@ -135,8 +134,8 @@ export default function DashboardPage() {
               type === 'Inondation'
                 ? 'bg-blue-100 text-blue-600'
                 : type === 'Séisme'
-                ? 'bg-red-100 text-red-600'
-                : 'bg-gray-100 text-gray-600';
+                  ? 'bg-red-100 text-red-600'
+                  : 'bg-gray-100 text-gray-600';
 
             return (
               <div
@@ -152,12 +151,22 @@ export default function DashboardPage() {
                 </p>
                 {status?.payload ? (
                   <ul className="text-sm text-gray-700 space-y-0.5">
-                    {Object.entries(status.payload).map(([key, value]) => (
-                      <li key={key}>
-                        <strong className="capitalize">{key}:</strong>{' '}
-                        <span className="font-mono">{String(value)}</span>
-                      </li>
-                    ))}
+                    {Object.entries(status.payload).map(([key, value]) => {
+                      if (key === 'timestamp') {
+                        const hour = new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        return (
+                          <li key={key}>
+                            <strong>Heure:</strong> <span className="font-mono">{hour}</span>
+                          </li>
+                        );
+                      }
+                      return (
+                        <li key={key}>
+                          <strong className="capitalize">{key}:</strong>{' '}
+                          <span className="font-mono">{String(value)}</span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ) : (
                   <p className="text-sm text-gray-500 italic">Aucun événement signalé.</p>
@@ -178,8 +187,8 @@ export default function DashboardPage() {
                 type === 'Inondation'
                   ? 'bg-blue-100 text-blue-600'
                   : type === 'Séisme'
-                  ? 'bg-red-100 text-red-600'
-                  : 'bg-gray-200 text-gray-600';
+                    ? 'bg-red-100 text-red-600'
+                    : 'bg-gray-200 text-gray-600';
 
               return (
                 <li
@@ -195,12 +204,22 @@ export default function DashboardPage() {
                       </span>
                     </div>
                     <ul className="text-sm text-gray-600 space-y-0.5">
-                      {Object.entries(msg.payload).map(([key, value]) => (
-                        <li key={key}>
-                          <strong className="capitalize">{key}:</strong>{' '}
-                          <span className="font-mono">{String(value)}</span>
-                        </li>
-                      ))}
+                      {Object.entries(msg.payload).map(([key, value]) => {
+                        if (key === 'timestamp') {
+                          const hour = new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                          return (
+                            <li key={key}>
+                              <strong>Heure:</strong> <span className="font-mono">{hour}</span>
+                            </li>
+                          );
+                        }
+                        return (
+                          <li key={key}>
+                            <strong className="capitalize">{key}:</strong>{' '}
+                            <span className="font-mono">{String(value)}</span>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 </li>
