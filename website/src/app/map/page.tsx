@@ -64,41 +64,59 @@ export default function DashboardPage() {
   const [configError, setConfigError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_MQTT_BROKER_URL) {
+      setConfigError("URL du broker MQTT non configurée. Veuillez configurer NEXT_PUBLIC_MQTT_BROKER_URL dans votre fichier .env");
+      setConnectionStatus('disconnected');
+      return;
+    }
+
     const options = {
-      clientId: 'website_' + Math.random().toString(16).substring(2, 8),
+      clientId: 'website_' + Math.random().toString(16).substring(2, 8) + '_' + new Date().getTime(),
       clean: true,
-      connectTimeout: 5000,
-      reconnectPeriod: 2000,
+      connectTimeout: 8000,
+      reconnectPeriod: 3000,
+      keepalive: 60,
+      rejectUnauthorized: false,
     };
 
-    if (!process.env.NEXT_PUBLIC_MQTT_BROKER_URL) {
-      setConfigError('URL du broker MQTT non configurée');
-    } else {
-      const client = mqtt.connect(process.env.NEXT_PUBLIC_MQTT_BROKER_URL, options);
-
-      client.on('connect', () => {
-        setConnectionStatus('connected');
-        client.subscribe('lyon/#');
-      });
-
-      client.on('message', (topic, message) => {
-        try {
-          const payload = JSON.parse(message.toString());
-          setMessages((prev) => [{ topic, payload }, ...prev]);
-        } catch (err) {
-          console.error('❌ Erreur de parsing JSON:', err);
-        }
-      });
-
-      client.on('error', () => setConnectionStatus('disconnected'));
-      client.on('disconnect', () => setConnectionStatus('disconnected'));
-      client.on('reconnect', () => setConnectionStatus('connecting'));
-      client.on('offline', () => setConnectionStatus('disconnected'));
-
-      return () => {
-        client.end();
-      };
+    let client;
+    try {
+      client = mqtt.connect(process.env.NEXT_PUBLIC_MQTT_BROKER_URL, options);
+    } catch (error) {
+      console.error("❌ Erreur lors de la création du client MQTT:", error);
+      setConfigError(`Erreur de connexion au broker MQTT: ${error}`);
+      setConnectionStatus('disconnected');
+      return;
     }
+
+    client.on('connect', () => {
+      setConnectionStatus('connected');
+      setConfigError(null);
+      client.subscribe('lyon/#', (err) => {
+        if (err) console.error('❌ Erreur subscription:', err);
+      });
+    });
+
+    client.on('message', (topic, message) => {
+      try {
+        const payload = JSON.parse(message.toString());
+        setMessages((prev) => [{ topic, payload }, ...prev]);
+      } catch (err) {
+        console.error('❌ Erreur de parsing JSON:', err);
+      }
+    });
+
+    client.on('error', (error) => {
+      console.error('❌ MQTT error:', error);
+      setConnectionStatus('disconnected');
+      setConfigError(`Erreur MQTT: ${error.message}`);
+    });
+
+    return () => {
+      if (client && client.connected) {
+        client.end(true);
+      }
+    };
   }, []);
 
   const getIcon = (topic: string) => {
