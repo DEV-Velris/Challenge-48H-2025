@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { Footer, Navbar } from "@/components";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+import { useNotification } from "./notifications";
+import { NotificationProvider, NotificationAuto } from "./notifications";
 
 const roboto = Roboto({
   weight: ["300", "400", "700"],
@@ -26,13 +28,15 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`antialiased flex flex-col min-h-screen ${roboto.className}`}>
         <SessionProvider>
-          <Navbar />
-          <div className={"flex-grow pt-16"}>
+          <NotificationProvider>
+            <NotificationAuto message="test" />
+            <Navbar />
             {children}
-          </div>
-          <Footer />
+            <Footer />
+          </NotificationProvider>
         </SessionProvider>
       </body>
     </html>
   );
 }
+
