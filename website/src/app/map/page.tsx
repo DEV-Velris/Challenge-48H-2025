@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import {useEffect, useState} from 'react';
 import mqtt from 'mqtt';
 import {FaWater, FaMountain} from 'react-icons/fa';
-import {useNotification} from "@/app/notifications";
 
 const MapComponent = dynamic(() => import('@/_components/Map/Map'), {ssr: false});
 
@@ -63,7 +62,6 @@ export default function DashboardPage() {
     const [messages, setMessages] = useState<MessageType[]>([]);
     const [connectionStatus, setConnectionStatus] = useState<'connected' | 'connecting' | 'disconnected'>('connecting');
     const [configError, setConfigError] = useState<string | null>(null);
-    const {permission, requestPermission, sendNotification} = useNotification();
 
     useEffect(() => {
         if (!process.env.NEXT_PUBLIC_MQTT_BROKER_URL) {
@@ -116,8 +114,6 @@ export default function DashboardPage() {
                         setTimeout(() => {
                             try {
                                 if (Notification.permission === 'granted') {
-                                    console.log('📱 Envoi notification:', type, arrondissement);
-
                                     let notificationBody = "";
                                     if (type === 'Inondation') {
                                         notificationBody = `Niveau d'eau: ${payload.waterLevel}m, Durée: ${payload.duration}h`;
@@ -130,6 +126,8 @@ export default function DashboardPage() {
                                         icon: '/favicon.ico',
                                         requireInteraction: true
                                     });
+                                } else {
+                                    Notification.requestPermission();
                                 }
                             } catch (err) {
                                 console.error('Erreur notification:', err);
