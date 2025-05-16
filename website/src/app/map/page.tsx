@@ -100,7 +100,15 @@ export default function DashboardPage() {
     client.on('message', (topic, message) => {
       try {
         const payload = JSON.parse(message.toString());
-        setMessages((prev) => [{ topic, payload }, ...prev]);
+        setMessages((prev) => {
+          const newMsg = { topic, payload };
+          // Check if a message with same topic + timestamp exists
+          const exists = prev.some(
+            (msg) => msg.topic === newMsg.topic && msg.payload.timestamp === newMsg.payload.timestamp
+          );
+          if (exists) return prev; // ignore duplicate
+          return [newMsg, ...prev];
+        });
       } catch (err) {
         console.error('❌ Erreur de parsing JSON:', err);
       }
