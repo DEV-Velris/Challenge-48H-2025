@@ -170,7 +170,7 @@ export default function Page() {
                     <h2 className="text-center text-gray-1 mb-8">Notre équipe</h2>
 
                     <div>
-                        <h3 className="ml-8 text-gray-1 mb-8">Dev</h3>
+                        <h3 className="text-center text-blue opacity-80 mb-8">Dev</h3>
                         <div className={"flex flex-col md:flex-row justify-center items-center gap-16"}>
                             {devTeamMembers.map((member, index) => (
                                 <div key={`dev-${index}`} className="flex flex-col items-center gap-1">
@@ -194,7 +194,7 @@ export default function Page() {
                     </div>
 
                     <div className={"mt-8"}>
-                        <h3 className="ml-8 mb-8 text-gray-1">Infra / Cyber</h3>
+                        <h3 className="text-center text-blue opacity-80 mb-8 ">Infra / Cyber</h3>
                         <div className={"flex flex-col md:flex-row justify-center items-center gap-16"}>
                             {infraCyberTeamMember.map((member, index) => (
                                 <div key={`dev-${index}`} className="flex flex-col items-center gap-1">
@@ -218,7 +218,7 @@ export default function Page() {
                     </div>
 
                     <div className={"mt-8"}>
-                        <h3 className="ml-8 mb-8">Data</h3>
+                        <h3 className="text-center text-blue opacity-80 mb-8">Data</h3>
                         <div className={"flex flex-col md:flex-row justify-center items-center gap-16"}>
                             {dataTeamMember.map((member, index) => (
                                 <div key={`dev-${index}`} className="flex flex-col items-center gap-1">
@@ -245,7 +245,7 @@ export default function Page() {
                 {/* Technologies */}
                 <h2 className="text-center text-gray-1 mb-8">Technologies utilisées</h2>
                 <div className={"mb-8"}>
-                    <h3 className="ml-8 mb-8 text-gray-1">Dev</h3>
+                    <h3 className="mb-8 text-center text-blue opacity-80">Dev</h3>
                     <div className={"flex flex-col md:flex-row justify-center items-center gap-16"}>
                         {devTech.map((tech, index) => (
                             <div key={`dev-${index}`} className="flex flex-col items-center gap-1">
@@ -264,7 +264,7 @@ export default function Page() {
                     </div>
                 </div>
                 <div className={"mb-8"}>
-                    <h3 className="ml-8 mb-8 text-gray-1">Infra / Cyber</h3>
+                    <h3 className="text-center text-blue opacity-80 mb-8">Infra / Cyber</h3>
                     <div className={"flex flex-col md:flex-row justify-center items-center gap-16"}>
                         {infraTech.map((tech, index) => (
                             <div key={`dev-${index}`} className="flex flex-col items-center gap-1">
@@ -283,7 +283,7 @@ export default function Page() {
                     </div>
                 </div>
                 <div>
-                    <h3 className="ml-8 mb-8 text-gray-1">Data</h3>
+                    <h3 className="text-center text-blue opacity-80 mb-8 ">Data</h3>
                     <div className={"flex flex-col md:flex-row justify-center items-center gap-16"}>
                         {pythonTech.map((tech, index) => (
                             <div key={`dev-${index}`} className="flex flex-col items-center gap-1">
