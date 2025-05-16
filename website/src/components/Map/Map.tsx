@@ -90,9 +90,9 @@ export default function MapPage() {
       const data = statusInfo?.data ?? {};
       const timestamp = statusInfo?.timestamp
         ? new Date(statusInfo.timestamp).toLocaleTimeString('fr-FR', {
-            hour: '2-digit',
-            minute: '2-digit',
-          })
+          hour: '2-digit',
+          minute: '2-digit',
+        })
         : '';
 
       layer.setStyle({
@@ -132,32 +132,34 @@ export default function MapPage() {
   };
 
   return (
-    <div className="h-screen w-full">
-      <MapContainer
-        center={[45.75, 4.85]}
-        zoom={12}
-        scrollWheelZoom
-        style={{ height: '100%', width: '100%' }}
-      >
-        <TileLayer
-          attribution="&copy; OpenStreetMap contributors"
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <GeoJSON
-          data={lyonGeoJson as any}
-          ref={geoJsonLayerRef}
-          style={(feature) => {
-            const rawArr = feature?.properties?.nom;
-            const arr = extractArrFromFeatureName(rawArr);
-            return {
-              fillColor: getColor(arr),
-              color: '#555',
-              weight: 1,
-              fillOpacity: 0.6,
-            };
-          }}
-        />
-      </MapContainer>
+    <div className="p-4 w-full" style={{ maxWidth: 600 }}>
+      <div className="w-96 md:w-184 h-96 md:h-184">
+        <MapContainer
+          center={[45.75, 4.85]}
+          zoom={12}
+          scrollWheelZoom
+          style={{ height: '100%', width: '100%' }}
+        >
+          <TileLayer
+            attribution="&copy; OpenStreetMap contributors"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <GeoJSON
+            data={lyonGeoJson as any}
+            ref={geoJsonLayerRef}
+            style={(feature) => {
+              const rawArr = feature?.properties?.nom;
+              const arr = extractArrFromFeatureName(rawArr);
+              return {
+                fillColor: getColor(arr),
+                color: '#555',
+                weight: 1,
+                fillOpacity: 0.6,
+              };
+            }}
+          />
+        </MapContainer>
+      </div>
     </div>
   );
 }
