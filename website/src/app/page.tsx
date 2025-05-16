@@ -115,6 +115,10 @@ const devTech: UsedTechnology[] = [
         techLogo: "/technologies/dev/websocketioLogo.png"
     },
     {
+        name: "Prisma",
+        techLogo: "/technologies/dev/prismaLogo.png"
+    },
+    {
         name: "Postgres",
         techLogo: "/technologies/dev/postgresLogo.png"
     }
@@ -142,13 +146,13 @@ const infraTech: UsedTechnology[] = [
 export default function Page() {
     const noIcon = "/membersPicture/noProfilePicture.png";
     return (
-        <div className="flex flex-col justify-center items-center mt-16">
+        <div className="flex flex-col gap-16 mt-16">
             <div className={"flex flex-col justify-center items-center w-full"}>
                 <h1 className="text-red">Presentation Du Projet</h1>
-                <h2 className="mt-8"> Notre sujet</h2>
-                <div className="flex flex-col md:flex-row justify-center items-center gap-16 w-fit">
+                <h2 className="mt-8 text-gray-1"> Notre sujet</h2>
+                <div className="flex flex-col md:flex-row justify-center items-center gap-16">
                     <div>
-                        <p className={"w-[50%]"}>
+                        <p className={"md:w-xl p-6 text-justify text-gray-1"}>
                             En 2180, la mégapole qu&#39;est devenue Lyon est sujette à de
                             violentes catastrophe naturelles qui détruisent la ville. <br/>
                             Heureusement un groupe de jeunes experts se sont ligués pour protégé la ville des
@@ -160,90 +164,143 @@ export default function Page() {
                     <MapLyon/>
                 </div>
             </div>
-            <div>
-                <h2 className="">Notre équipe</h2>
+            <div className={"flex flex-col w-full"}>
+                {/* Membres */}
+                <div className={"mb-16"}>
+                    <h2 className="text-center text-gray-1 mb-8">Notre équipe</h2>
 
-                <h3 className="text-3xl mb-10">Dev</h3>
-                <div>
-                    {devTeamMembers.map((member, index) => (
-                        <div key={`dev-${index}`} className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
-                            <p className="text-xl">{member.first_name}</p>
-                            <p className="text-xl">{member.last_name}</p>
-                            <p className="text-xl  ml-20">{member.class}</p>
-                            <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
-                                <Image src={member.profile_picture_url ?? noIcon}
-                                       alt={`${member.first_name} ${member.last_name} picture`} width={200}
-                                       height={200}/>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                <h3 className="text-3xl mt-30 mb-10">Infra/Cyber</h3>
-                <div>
-                    {infraCyberTeamMember.map((member, index) => (
-                        <div key={`infra-cyber-${index}`}
-                             className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
-                            <p className="text-xl">{member.first_name}</p>
-                            <p className="text-xl">{member.last_name}</p>
-                            <p className="text-xl  ml-20">{member.class}</p>
-                            <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
-                                <Image src={member.profile_picture_url ?? noIcon}
-                                       alt={`${member.first_name} ${member.last_name} picture`} width={200}
-                                       height={200}/>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                <h3 className="text-3xl mt-30 mb-10">Data</h3>
-                <div>
-                    {dataTeamMember.map((member, index) => (
-                        <div key={`data-${index}`} className="grid grid-cols-4 items-center gap-8 ml-[5%] mr-[5%] mb-5">
-                            <p className="text-xl">{member.first_name}</p>
-                            <p className="text-xl">{member.last_name}</p>
-                            <p className="text-xl  ml-20">{member.class}</p>
-                            <div className="w-32 h-32 rounded-full overflow-hidden ml-3">
-                                <Image src={member.profile_picture_url ?? noIcon}
-                                       alt={`${member.first_name} ${member.last_name} picture`} width={200}
-                                       height={200}/>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                <h2 className="text-3xl mb-20 mt-30">tecnologie utilisée</h2>
-                <h3 className="text-2xl mb-20">Data</h3>
-                <h4 className="text-xl mb-10">Python</h4>
-                {pythonTech.map((member, index) => (
-                    <div key={`data-${index}`} className="grid grid-cols-2 items-center gap-8 ml-[5%] mr-[5%] mb-5">
-                        <p className="text-xl">{member.name}</p>
-                        <div className="w-32 h-32 overflow-hidden ml-3">
-                            <Image src={member.techLogo ?? noIcon} alt={`${member.name} logo`} width={200}
-                                   height={200}/>
+                    <div>
+                        <h3 className="ml-8 text-gray-1 mb-8">Dev</h3>
+                        <div className={"flex flex-col md:flex-row justify-center items-center gap-16"}>
+                            {devTeamMembers.map((member, index) => (
+                                <div key={`dev-${index}`} className="flex flex-col items-center gap-1">
+                                    <div className="w-32 h-32 rounded-full overflow-hidden">
+                                        <Image
+                                            src={member.profile_picture_url ?? noIcon}
+                                            alt={`${member.first_name} ${member.last_name} picture`}
+                                            width={128}
+                                            height={128}
+                                            className="object-cover w-32 h-32"
+                                        />
+                                    </div>
+                                    <div className={"flex flex-col gap-1 md:flex-row"}>
+                                        <p className="text-gray-1">{member.first_name}</p>
+                                        <p className="text-gray-1">{member.last_name}</p>
+                                    </div>
+                                    <p className="text-gray-1">{member.class}</p>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                ))}
-                <h3 className="text-2xl mb-20 mt-30">Dev</h3>
-                {devTech.map((member, index) => (
-                    <div key={`data-${index}`} className="grid grid-cols-2 items-center gap-8 ml-[5%] mr-[5%] mb-5">
-                        <p className="text-xl">{member.name}</p>
-                        <div className="w-32 h-32 overflow-hidden ml-10">
-                            <Image src={member.techLogo ?? noIcon} alt={`${member.name} logo`} width={200}
-                                   height={200}/>
-                        </div>
-                    </div>
-                ))}
 
-                <h3 className="text-2xl mb-20 mt-30"> Infra/Cyber</h3>
-                {infraTech.map((member, index) => (
-                    <div key={`data-${index}`} className="grid grid-cols-2 items-center gap-8 ml-[5%] mr-[5%] mb-5">
-                        <p className="text-xl">{member.name}</p>
-                        <div className="w-32 h-32 overflow-hidden ml-10">
-                            <Image src={member.techLogo ?? noIcon} alt={`${member.name} logo`} width={200}
-                                   height={200}/>
+                    <div className={"mt-8"}>
+                        <h3 className="ml-8 mb-8 text-gray-1">Infra / Cyber</h3>
+                        <div className={"flex flex-col md:flex-row justify-center items-center gap-16"}>
+                            {infraCyberTeamMember.map((member, index) => (
+                                <div key={`dev-${index}`} className="flex flex-col items-center gap-1">
+                                    <div className="w-32 h-32 rounded-full overflow-hidden">
+                                        <Image
+                                            src={member.profile_picture_url ?? noIcon}
+                                            alt={`${member.first_name} ${member.last_name} picture`}
+                                            width={128}
+                                            height={128}
+                                            className="object-cover w-32 h-32"
+                                        />
+                                    </div>
+                                    <div className={"flex flex-col gap-1 md:flex-row"}>
+                                        <p className="text-gray-1">{member.first_name}</p>
+                                        <p className="text-gray-1">{member.last_name}</p>
+                                    </div>
+                                    <p className="text-gray-1">{member.class}</p>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                ))}
+
+                    <div className={"mt-8"}>
+                        <h3 className="ml-8 mb-8">Data</h3>
+                        <div className={"flex flex-col md:flex-row justify-center items-center gap-16"}>
+                            {dataTeamMember.map((member, index) => (
+                                <div key={`dev-${index}`} className="flex flex-col items-center gap-1">
+                                    <div className="w-32 h-32 rounded-full overflow-hidden">
+                                        <Image
+                                            src={member.profile_picture_url ?? noIcon}
+                                            alt={`${member.first_name} ${member.last_name} picture`}
+                                            width={128}
+                                            height={128}
+                                            className="object-cover w-32 h-32"
+                                        />
+                                    </div>
+                                    <div className={"flex flex-col gap-1 md:flex-row"}>
+                                        <p className="text-gray-1">{member.first_name}</p>
+                                        <p className="text-gray-1">{member.last_name}</p>
+                                    </div>
+                                    <p className="text-gray-1">{member.class}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Technologies */}
+                <h2 className="text-center text-gray-1 mb-8">Technologies utilisées</h2>
+                <div className={"mb-8"}>
+                    <h3 className="ml-8 mb-8 text-gray-1">Dev</h3>
+                    <div className={"flex flex-col md:flex-row justify-center items-center gap-16"}>
+                        {devTech.map((tech, index) => (
+                            <div key={`dev-${index}`} className="flex flex-col items-center gap-1">
+                                <div className="w-20 h-20">
+                                    <Image
+                                        src={tech.techLogo}
+                                        alt={`${tech.name} picture`}
+                                        width={128}
+                                        height={128}
+                                        className="object-contain w-20 h-20"
+                                    />
+                                </div>
+                                <p className={"text-gray-1"}>{tech.name}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className={"mb-8"}>
+                    <h3 className="ml-8 mb-8 text-gray-1">Infra / Cyber</h3>
+                    <div className={"flex flex-col md:flex-row justify-center items-center gap-16"}>
+                        {infraTech.map((tech, index) => (
+                            <div key={`dev-${index}`} className="flex flex-col items-center gap-1">
+                                <div className="w-32 h-32 rounded-full overflow-hidden">
+                                    <Image
+                                        src={tech.techLogo}
+                                        alt={`${tech.name} picture`}
+                                        width={128}
+                                        height={128}
+                                        className="object-contain w-32 h-32"
+                                    />
+                                </div>
+                                <p className={"text-gray-1"}>{tech.name}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div>
+                    <h3 className="ml-8 mb-8 text-gray-1">Data</h3>
+                    <div className={"flex flex-col md:flex-row justify-center items-center gap-16"}>
+                        {pythonTech.map((tech, index) => (
+                            <div key={`dev-${index}`} className="flex flex-col items-center gap-1">
+                                <div className="w-32 h-32 rounded-full overflow-hidden">
+                                    <Image
+                                        src={tech.techLogo}
+                                        alt={`${tech.name} picture`}
+                                        width={128}
+                                        height={128}
+                                        className="object-contain w-32 h-32"
+                                    />
+                                </div>
+                                <p className={"text-gray-1"}>{tech.name}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </div>
     );
