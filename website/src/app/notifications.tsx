@@ -1,64 +1,174 @@
-'use client'
+'use client';
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { useState, useEffect } from 'react';
 
-type Notification = {
-    message: string;
-    type?: "success" | "error" | "info";
-};
+interface NotificationProps {
+    title: string;
+    body: string;
+    icon?: string;
+    onClick?: () => void;
+}
 
-type NotificationContextType = {
-    push: (notification: Notification) => void;
-};
+const NextNotification: React.FC = () => {
+    const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
 
-const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
-
-export const useNotification = () => {
-    const context = useContext(NotificationContext);
-    if (!context) throw new Error("useNotification must be used within NotificationProvider");
-    return context;
-};
-
-export const NotificationProvider = ({ children }: { children: ReactNode }) => {
-    const [notification, setNotification] = useState<Notification | null>(null);
-
-    const push = (notif: Notification) => {
-        setNotification(notif);
-
-        if (typeof window !== "undefined" && "Notification" in window) {
-            if (Notification.permission === "granted") {
-                new Notification(notif.message);
-            } else if (Notification.permission !== "denied") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        new Notification(notif.message);
-                    }
-                });
-            }
+    useEffect(() => {
+        // Vérifier si les notifications sont supportées
+        if (!('Notification' in window)) {
+            console.error('Ce navigateur ne supporte pas les notifications de bureau');
+            return;
         }
 
-        setTimeout(() => setNotification(null), 5000);
+        // Vérifier l'état de la permission
+        if (Notification.permission === 'granted') {
+            setPermissionGranted(true);
+        }
+    }, []);
+
+    const requestPermission = async () => {
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                setPermissionGranted(true);
+            }
+        } catch (error) {
+            console.error('Erreur lors de la demande de permission:', error);
+        }
+    };
+
+    const showNotification = ({ title, body, icon, onClick }: NotificationProps) => {
+        if (!permissionGranted) {
+            console.warn('Permission de notification non accordée');
+            return;
+        }
+
+        try {
+            const notification = new Notification(title, {
+                body,
+                icon: icon || '/favicon.ico',
+            });
+
+            if (onClick) {
+                notification.onclick = onClick;
+            }
+        } catch (error) {
+            console.error('Erreur lors de l\'affichage de la notification:', error);
+        }
     };
 
     return (
-        <NotificationContext.Provider value={{ push }}>
-            {children}
-        </NotificationContext.Provider>
+        <div className="flex flex-col gap-4 p-4 border rounded-md">
+            <h2 className="text-xl font-semibold text-gray-1">Notifications</h2>
+
+            {!permissionGranted ? (
+                <div>
+                    <p className="text-gray-1 mb-2">Pour recevoir des notifications, veuillez autoriser les notifications.</p>
+                    <button onClick={requestPermission}>
+                        Activer les notifications
+                    </button>
+                </div>
+            ) : (
+                <div>
+                    <p className="text-gray-1 mb-2">Les notifications sont activées!</p>
+                    <button
+                        onClick={() => showNotification({
+                            title: 'Notification test',
+                            body: 'Ceci est un test de notification',
+                            onClick: () => console.log('Notification cliquée')
+                        })}
+                    >
+                        Envoyer une notification test
+                    </button>
+                </div>
+            )}
+        </div>
     );
 };
 
-export const NotificationAuto = ({
-    message,
-    type = "success",
-}: {
-    message: string;
-    type?: "success" | "error" | "info";
-}) => {
-    const { push } = useNotification();
+export const useNotification = () => {
+    const [permission, setPermission] = useState<NotificationPermission>('default');
 
-    React.useEffect(() => {
-        push({ message, type });
+    // Initialisation des permissions
+    useEffect(() => {
+        if (typeof window !== 'undefined' && 'Notification' in window) {
+            setPermission(Notification.permission);
+
+            // Forcer un refresh après une demande utilisateur active
+            const checkPermission = () => {
+                setPermission(Notification.permission);
+            };
+            document.addEventListener('visibilitychange', checkPermission);
+
+            return () => {
+                document.removeEventListener('visibilitychange', checkPermission);
+            };
+        }
     }, []);
 
-    return null;
+    const requestPermission = async () => {
+        if (typeof window === 'undefined' || !('Notification' in window)) {
+            console.warn('Notifications non supportées');
+            return 'denied' as NotificationPermission;
+        }
+
+        try {
+            console.log('Demande permission notifications...');
+            const result = await Notification.requestPermission();
+            console.log('Résultat permission:', result);
+            setPermission(result);
+            return result;
+        } catch (error) {
+            console.error('Erreur lors de la demande de permission:', error);
+            return Notification.permission;
+        }
+    };
+
+    const sendNotification = (title: string, options?: NotificationOptions) => {
+        if (typeof window === 'undefined' || !('Notification' in window)) {
+            console.warn('Notifications non supportées');
+            return false;
+        }
+
+        if (Notification.permission !== 'granted') {
+            console.warn('Permission non accordée pour les notifications:', Notification.permission);
+            return false;
+        }
+
+        try {
+            console.log('Création notification:', title);
+            // Utilisez une fonction séparée pour éviter les blocages automatiques
+            setTimeout(() => {
+                try {
+                    const notification = new Notification(title, {
+                        ...options,
+                        silent: false,
+                        requireInteraction: true
+                    });
+
+                    notification.onclick = () => {
+                        window.focus();
+                        notification.close();
+                    };
+
+                    console.log('Notification créée avec succès');
+                } catch (err) {
+                    console.error('Erreur création notification:', err);
+                }
+            }, 100);
+
+            return true;
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi de la notification:', error);
+            return false;
+        }
+    };
+
+    return {
+        permission,
+        requestPermission,
+        sendNotification,
+        isSupported: typeof window !== 'undefined' && 'Notification' in window
+    };
 };
+
+export default NextNotification;
