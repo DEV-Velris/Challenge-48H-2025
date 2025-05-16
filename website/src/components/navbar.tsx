@@ -10,9 +10,10 @@ import {LuUser} from "react-icons/lu";
 
 const navItems: NavbarItem[] = [
     {label: 'Accueil', href: '/'},
-    {label: 'En Direct', href: '/event'},
+    {label: 'En Direct', href: '/map'},
     {label: "Chat en direct", href: '/chat'},
     {label: 'Activités', href: '/activity'},
+    {label: 'Conseils', href: '/advice'},
 ];
 
 export const Navbar: React.FC = () => {
@@ -108,7 +109,7 @@ export const Navbar: React.FC = () => {
                             <button
                                 aria-label="User menu"
                                 onClick={toggleDropdown}
-                                className="flex items-center justify-center ml-4 rounded-full bg-blue text-white w-10 h-10 hover:bg-blue-600 transition-colors duration-200"
+                                className="flex items-center justify-center ml-4 rounded-full bg-blue text-white w-10 h-10 hover:bg-blue-600 hover:cursor-pointer transition-colors duration-200"
                             >
                                 {session ? (
                                     <Image
