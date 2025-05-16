@@ -1,11 +1,20 @@
+import { Roboto } from "next/font/google";
+
 import type { Metadata } from "next";
+import { Footer, Navbar } from "@/components";
 import "./globals.css";
-import { Footer } from "./layout/footer";
-import { Navbar } from "./layout/navbar";
+import { SessionProvider } from "next-auth/react";
+
+const roboto = Roboto({
+  weight: ["300", "400", "700"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  display: "swap",
+})
 
 export const metadata: Metadata = {
-  title: "Challenge 48H",
-  description: "Challenge 48H",
+  title: "SentiLyon",
+  description: "Protéger et aider les Lyonnais face aux inondations et autres catastrophes naturelles.",
 };
 
 export default function RootLayout({
@@ -15,10 +24,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className="antialiased flex flex-col min-h-screen">
-        <Navbar />
-        {children}
-        <Footer />
+      <body className={`antialiased flex flex-col min-h-screen ${roboto.className}`}>
+        <SessionProvider>
+          <Navbar />
+          <div className={"flex-grow pt-16"}>
+            {children}
+          </div>
+          <Footer />
+        </SessionProvider>
       </body>
     </html>
   );
