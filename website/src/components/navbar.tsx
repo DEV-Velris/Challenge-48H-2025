@@ -1,10 +1,12 @@
 'use client';
 
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {NavbarItem} from "@/types";
-import {usePathname} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
+import {signIn, signOut, useSession} from "next-auth/react";
+import {LuUser} from "react-icons/lu";
 
 const navItems: NavbarItem[] = [
     {label: 'Accueil', href: '/'},
@@ -14,8 +16,12 @@ const navItems: NavbarItem[] = [
 ];
 
 export const Navbar: React.FC = () => {
+    const {data: session} = useSession();
     const currentPath = usePathname();
+    const router = useRouter();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isLoggedInDropdownOpen, setIsLoggedInDropdownOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (isMenuOpen) {
@@ -29,8 +35,40 @@ export const Navbar: React.FC = () => {
         };
     }, [isMenuOpen]);
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+
+            if (dropdownRef.current &&
+                !dropdownRef.current.contains(event.target as Node) &&
+                !(event.target as Element).closest('button[data-auth-action]')) {
+                setIsLoggedInDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+    };
+
+    const toggleDropdown = () => {
+        setIsLoggedInDropdownOpen(!isLoggedInDropdownOpen);
+    };
+
+    const handleAuthClick = async (event?: React.MouseEvent) => {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        if (!session) {
+            router.push(`/login?callbackUrl=${encodeURIComponent(currentPath)}`);
+        } else {
+            signOut({redirectTo: currentPath});
+        }
     };
 
     return (
@@ -64,7 +102,72 @@ export const Navbar: React.FC = () => {
                             </Link>
                         ))}
                     </div>
+
+                    <div className="hidden md:flex items-center" ref={dropdownRef}>
+                        <div className="relative">
+                            <button
+                                aria-label="User menu"
+                                onClick={toggleDropdown}
+                                className="flex items-center justify-center ml-4 rounded-full bg-blue text-white w-10 h-10 hover:bg-blue-600 transition-colors duration-200"
+                            >
+                                {session ? (
+                                    <Image
+                                        src={session.user?.image || ''}
+                                        alt="User Avatar"
+                                        width={40}
+                                        height={40}
+                                        className="rounded-full"
+                                    />
+                                ) : (
+                                    <LuUser className="h-6 w-6"/>
+                                )}
+                            </button>
+                            {isLoggedInDropdownOpen && (
+                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                                    <button
+                                        data-auth-action="true"
+                                        onClick={(e) => handleAuthClick(e)}
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                        {session ? 'Se déconnecter' : 'Se connecter'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
                     <div className="md:hidden flex items-center">
+                        <div className="relative" ref={dropdownRef}>
+                            <button
+                                aria-label="User menu"
+                                onClick={toggleDropdown}
+                                className="flex items-center justify-center rounded-full bg-blue text-white w-10 h-10 mr-2"
+                            >
+                                {session ? (
+                                    <Image
+                                        src={session.user?.image || ''}
+                                        alt="User Avatar"
+                                        width={40}
+                                        height={40}
+                                        className="rounded-full"
+                                    />
+                                ) : (
+                                    <LuUser className="h-6 w-6"/>
+                                )}
+                            </button>
+                            {isLoggedInDropdownOpen && !isMenuOpen && (
+                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                                    <button
+                                        data-auth-action="true"
+                                        onClick={(e) => handleAuthClick(e)}
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                        {session ? 'Se déconnecter' : 'Se connecter'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
                         <button
                             onClick={toggleMenu}
                             className="inline-flex items-center justify-center p-2 rounded-md text-gray-1 focus:outline-none z-50"
@@ -108,6 +211,17 @@ export const Navbar: React.FC = () => {
                                 {item.label}
                             </Link>
                         ))}
+
+                        <button
+                            data-auth-action="true"
+                            onClick={(e) => {
+                                handleAuthClick(e);
+                                setIsMenuOpen(false);
+                            }}
+                            className="block px-4 py-3 text-xl rounded-md mb-4 text-gray-1"
+                        >
+                            {session ? 'Se déconnecter' : 'Se connecter'}
+                        </button>
                     </div>
                 </div>
             )}
