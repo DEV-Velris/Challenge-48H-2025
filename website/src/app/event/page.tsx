@@ -31,6 +31,7 @@ const extractArrondissement = (topic: string) => {
 export default function InfoPage() {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [connectionStatus, setConnectionStatus] = useState<'connected' | 'connecting' | 'disconnected'>('connecting');
+  const [configError, setConfigError] = useState<string | null>(null);
 
   useEffect(() => {
     const options = {
@@ -40,46 +41,48 @@ export default function InfoPage() {
       reconnectPeriod: 2000,
     };
 
-    if (!process.env.NEXT_PUBLIC_MQTT_BROKER_URL) return;
+    if (!process.env.NEXT_PUBLIC_MQTT_BROKER_URL) {
+      setConfigError("URL du broker MQTT non configurée");
+    } else {
+      const client = mqtt.connect(process.env.NEXT_PUBLIC_MQTT_BROKER_URL, options);
 
-    const client = mqtt.connect(process.env.NEXT_PUBLIC_MQTT_BROKER_URL, options);
-
-    client.on('connect', () => {
-      setConnectionStatus('connected');
-      client.subscribe('lyon/#', (err) => {
-        if (err) console.error('❌ Erreur subscription:', err);
+      client.on('connect', () => {
+        setConnectionStatus('connected');
+        client.subscribe('lyon/#', (err) => {
+          if (err) console.error('❌ Erreur subscription:', err);
+        });
       });
-    });
 
-    client.on('message', (topic, message) => {
-      try {
-        const payload = JSON.parse(message.toString());
-        setMessages((prev) => [{ topic, payload }, ...prev]);
-      } catch (err) {
-        console.error('❌ Erreur de parsing JSON:', err);
-      }
-    });
+      client.on('message', (topic, message) => {
+        try {
+          const payload = JSON.parse(message.toString());
+          setMessages((prev) => [{ topic, payload }, ...prev]);
+        } catch (err) {
+          console.error('❌ Erreur de parsing JSON:', err);
+        }
+      });
 
-    client.on('error', (error) => {
-      console.error('❌ MQTT error:', error);
-      setConnectionStatus('disconnected');
-    });
+      client.on('error', (error) => {
+        console.error('❌ MQTT error:', error);
+        setConnectionStatus('disconnected');
+      });
 
-    client.on('disconnect', () => {
-      setConnectionStatus('disconnected');
-    });
+      client.on('disconnect', () => {
+        setConnectionStatus('disconnected');
+      });
 
-    client.on('reconnect', () => {
-      setConnectionStatus('connecting');
-    });
+      client.on('reconnect', () => {
+        setConnectionStatus('connecting');
+      });
 
-    client.on('offline', () => {
-      setConnectionStatus('disconnected');
-    });
+      client.on('offline', () => {
+        setConnectionStatus('disconnected');
+      });
 
-    return () => {
-      client.end();
-    };
+      return () => {
+        client.end();
+      };
+    }
   }, []);
 
   const getIcon = (topic: string) => {
@@ -101,6 +104,15 @@ export default function InfoPage() {
       <main className="min-h-screen py-10 px-4 md:px-10 bg-gray-50">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">INFOS 🚨</h1>
+
+          {configError && (
+              <div className="p-4 mb-4 rounded-lg bg-red-100 border-l-4 border-red-500">
+                <p className="text-red-700 font-medium">
+                  <span className="mr-2">⚠️</span>
+                  {configError}
+                </p>
+              </div>
+          )}
 
           {connectionStatus !== 'connected' && (
               <div className={`p-4 mb-4 rounded-lg ${connectionStatus === 'connecting' ? 'bg-yellow-100' : 'bg-red-100'}`}>

@@ -3,7 +3,12 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const client = mqtt.connect(process.env.MQTT_URL ?? '');
+if (!process.env.MQTT_URL) {
+    console.error('❌ MQTT_URL is not defined in .env file');
+    process.exit(1);
+}
+
+const client = mqtt.connect(process.env.MQTT_URL);
 
 const earthquakeOnlyDistricts = ['5e', '9e']
 const bothEventsDistricts = ['1er', '2e', '4e']
